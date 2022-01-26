@@ -16,12 +16,15 @@ class CreateEntreprisesTable extends Migration
         Schema::create('entreprises', function (Blueprint $table) {
             $table->id();
             $table->string('num_tva');
+            $table->string('nom');
             $table->string('activite');
             $table->string('adresse');
             $table->string('ville');
             $table->string('pays');
             $table->string('num_fixe');
             $table->string('code_postal');
+            $table->string('user_id')->constrianed('users','id');
+
             $table->timestamps();
         });
     }

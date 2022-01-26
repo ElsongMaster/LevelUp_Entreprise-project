@@ -10,8 +10,8 @@ class Personnecontact extends Model
     use HasFactory;
 
 
-    public function profilcompany(){
-        return $this->belongsTo(profilcompany::class);
+    public function entreprise(){
+        return $this->belongsTo(Entreprise::class);
     }
 
 

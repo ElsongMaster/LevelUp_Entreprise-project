@@ -9,5 +9,13 @@ class Entreprise extends Model
 {
     use HasFactory;
 
+    
+    public function user(){
+        return $this->belongsTo(Profilcompany::class);
+    }
+
+    public function personnecontact(){
+        return $this->hasOne(Personnecontact::class);
+    }
 
 }

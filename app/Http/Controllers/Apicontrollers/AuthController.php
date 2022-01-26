@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ApiControllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Controller;
 
 class AuthController extends Controller
 {
@@ -34,6 +35,15 @@ class AuthController extends Controller
         ]);
     }
 
+    public function allUser(){
+        return response([
+            "message" => "Succès.",
+            "data" =>User::all(),
+            "status" => 200,
+            "error" => []
+        ]);      
+    }
+
 
     public function register(Request $rq)
     {
@@ -56,7 +66,6 @@ class AuthController extends Controller
 
         return response()->json([
             "message" => "votre compte a bien été crée.",
-
             "status" => 200,
             "error" => "{}",
         ]);

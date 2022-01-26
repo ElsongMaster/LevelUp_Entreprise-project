@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ApiControllers;
 
 use App\Models\Message;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class MessagerieApiController extends Controller
 {
@@ -55,7 +56,7 @@ class MessagerieApiController extends Controller
     }
 
     public function responseAdmin(Request $rq){
-        
+
     }
     /**
      * Display the specified resource.

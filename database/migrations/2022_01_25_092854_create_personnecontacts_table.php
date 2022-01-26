@@ -18,7 +18,7 @@ class CreatePersonnecontactsTable extends Migration
             $table->string('email');
             $table->string('nom');
             $table->string('num');
-            $table->foreignId('profilecompany_id')->constrained('');
+            $table->foreignId('entreprise_id')->constrained('entreprises','id');
             $table->timestamps();
         });
     }

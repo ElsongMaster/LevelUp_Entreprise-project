@@ -1,9 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ApiControllers;
+
 
 use App\Models\Entreprise;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\Personnecontact;
 
 class EntrepriseApiController extends Controller
 {
@@ -23,7 +26,6 @@ class EntrepriseApiController extends Controller
         return response([
             "message" => "Succès.",
             "data" =>$data,
-
             "status" => 200,
             "error" => []
         ]);
@@ -39,6 +41,7 @@ class EntrepriseApiController extends Controller
     {
         $request->validate([
             'num_tva' => 'required|string',
+            'nom' => 'required|string',
             'activite' => 'required|string|unique:users,email',
             'adresse' => 'required|string',
             'ville' => 'required|string',
@@ -52,6 +55,7 @@ class EntrepriseApiController extends Controller
     public function register(Request $rq){
         $rq->validate([
             'num_tva' => 'required|string',
+            'nom' => 'required|string',
             'activite' => 'required|string|unique:users,email',
             'adresse' => 'required|string',
             'ville' => 'required|string',
@@ -61,20 +65,46 @@ class EntrepriseApiController extends Controller
         ]);
 
         $newEntreprise = new Entreprise;
-
-        $newEntreprise->num_TVA = $rq->num_TVA;
+        $newEntreprise->num_TVA = $rq->num_tva;
+        $newEntreprise->nom = $rq->nom;
         $newEntreprise->activite = $rq->activite;
         $newEntreprise->adresse = $rq->adresse;
         $newEntreprise->ville = $rq->ville;
         $newEntreprise->pays = $rq->pays;
         $newEntreprise->num_fixe = $rq->num_fixe;
         $newEntreprise->code_postal = $rq->code_postal;
+        $newEntreprise->user_id = $rq->user()->id;
         $newEntreprise->save();
         
         
-        return response([
+        return response()->json([
             "message" => "Infos conncernant l'entreprise correctement enregistré",
-            "data" => "{}",
+            "data" => [],
+            "status" => 200,
+            "error" => "{}",
+        ]);
+
+    }
+    public function register2(Request $rq){
+        $rq->validate([
+            'email' => 'required|string',
+            'nom' => 'required|string',
+            'num' => 'required|string|unique:users,email',
+
+        ]);
+        $user = $rq->user();
+        // dd($user->entreprise)
+        $newPersonnecontact = new Personnecontact;
+        $newPersonnecontact->email = $rq->email;
+        $newPersonnecontact->nom = $rq->nom;
+        $newPersonnecontact->num = $rq->num;
+        $newPersonnecontact->entreprise_id= $user->entreprise->id;
+        $newPersonnecontact->save();
+        
+        
+        return response()->json([
+            "message" => "Infos conncernant l'entreprise correctement enregistré",
+            "data" => $newPersonnecontact,
             "status" => 200,
             "error" => "{}",
         ]);
@@ -109,7 +139,7 @@ class EntrepriseApiController extends Controller
         ]);
         
         $user = $rq->user();
-        $personneContact = $user->profilecompany()->personnecontact();
+        $personneContact = $user->entrprise()->personnecontact();
         $personneContact->email = $rq->email;
         $personneContact->nom = $rq->nom;
         $personneContact->num = $rq->num;
