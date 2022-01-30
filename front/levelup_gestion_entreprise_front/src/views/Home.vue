@@ -76,7 +76,6 @@ import axios from "axios";
 import { required, minLength, email } from "vuelidate/lib/validators";
 export default {
   name: "Home",
-
   data() {
     return {
       isOkToSubmit: true,
@@ -88,7 +87,6 @@ export default {
       response: null,
     };
   },
-
   validations: {
     bodyDataForm: {
       email: {
@@ -109,16 +107,13 @@ export default {
       e.preventDefault();
       var formRequest = new FormData();
       var tokenReq = null;
-
       formRequest.append("email", this.bodyDataForm.email);
       formRequest.append("password", this.bodyDataForm.password);
-
       if (this.isOkToSubmit) {
         axios
           .post("http://127.0.0.1:8001/api/v1/login/user", formRequest)
           .then((response) => {
             console.log("login", response);
-
             if (response.data.status == 200) {
               tokenReq = response.data.data.token;
               this.$store.dispatch("updateTokenConnexion", tokenReq);
