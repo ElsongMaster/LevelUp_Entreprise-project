@@ -1,16 +1,16 @@
 <template>
-  <component :is ="steps[currentStep].component" />
+  <component :is ="steps[currentStep].component" @increment="next()" @decrement="previous()"/>
 </template>
 
 <script>
 // import { component } from "vue/types/umd";
-import infosEntreprise from "./Steps/InfosEntreprise.vue";
-import InfosPersonnecontact from "./Steps/InfosPersonnecontact.vue";
+import infosEntreprise from "../components/Steps/InfosEntreprise.vue";
+import InfosPersonnecontact from "../components/Steps/InfosPersonnecontact.vue";
 export default {
   name: "MultiSteps",
   data() {
     return {
-      currentStep: 1,
+      currentStep: 0,
       steps: [
         {
           component: infosEntreprise,
@@ -25,6 +25,16 @@ export default {
     infosEntreprise,
     InfosPersonnecontact,
   },
+
+  methods:{
+      next(){
+          this.currentStep+=1;
+      },
+
+      previous(){
+          this.currentStep-=1;
+      }
+  }
 };
 </script>
 
