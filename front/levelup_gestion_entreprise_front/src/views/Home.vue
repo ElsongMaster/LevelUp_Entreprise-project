@@ -147,8 +147,11 @@ export default {
                       })
                       .then((response) => {
                         let listTask = response.data.data;
-                        localStorage.setItem("listTask",JSON.stringify(listTask) );
-                        this.$store.dispatch('updateListTask',listTask)
+                        localStorage.setItem(
+                          "listTask",
+                          JSON.stringify(listTask)
+                        );
+                        this.$store.dispatch("updateListTask", listTask);
                       });
                   } else {
                     this.$router.push({ path: "/multisteps" });
