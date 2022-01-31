@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
-
+namespace App\Http\Controllers\ApiControllers;
 use Illuminate\Http\Request;
-
+use App\Http\Controllers\Controller;
 class TacheApiController extends Controller
 {
     /**
@@ -24,7 +23,7 @@ class TacheApiController extends Controller
         }
         return response([
             "message"=>"succés",
-            "data"=>$user->taches(),
+            "data"=>$user->taches()->get(),
             "status" => 401,
             "error" => []
         ]);

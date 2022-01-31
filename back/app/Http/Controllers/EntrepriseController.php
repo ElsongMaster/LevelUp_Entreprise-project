@@ -17,7 +17,7 @@ class EntrepriseController extends Controller
     {
         $entreprise = Entreprise::all();
 
-        return view('',compact('entreprise'));
+        return view('backend.entreprise.allEntreprise',compact('entreprises'));
     }
 
     /**

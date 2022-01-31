@@ -16,11 +16,22 @@ class UserSeeder extends Seeder
     public function run()
     {
         DB::table('users')->insert([
-            'name' => 'Els',
-            'email' => 'Els@gmail.com',
-            'email_verified_at' => now(),
-            'password' => Hash::make('test'),
-            'remember_token' => Str::random(10),
+            [
+
+                'name' => 'Els',
+                'email' => 'Els@gmail.com',
+                'email_verified_at' => now(),
+                'password' => Hash::make('test'),
+                'isprofilcomplete' => false,
+            ],
+            [
+
+                'name' => 'oklm',
+                'email' => 'oklm@gmail.com',
+                'email_verified_at' => now(),
+                'password' => Hash::make('test'),
+                'isprofilcomplete' => true,
+            ],
         ]);
     }
 }

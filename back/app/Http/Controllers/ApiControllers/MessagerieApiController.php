@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ApiControllers;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Sessionmessage;
 
 class MessagerieApiController extends Controller
 {
@@ -16,6 +17,37 @@ class MessagerieApiController extends Controller
     public function index()
     {
   
+    }
+
+    public function welcome(Request $rq){
+        $newSessionmsg = new Sessionmessage;
+        $user = $rq->user();
+        $newSessionmsg->user_id = $user->id;
+
+        $newSessionmsg->save();
+
+        $newMessage = new Message;
+        $newMessage->contenu = "Bienvenue Mme/Mr. ".$user->name.", que puis-je faire pour vous ?";
+        $newMessage->user_id = $user->id;
+        $newMessage->sessionmessage_id = $newSessionmsg->id;
+        $newMessage->save();
+
+
+        return response([
+            "message" => "Succès.",
+            "data" =>[
+                "msg"=>$newMessage->contenu
+            ],
+            "status" => 200,
+            "error" => []
+        ]);
+
+
+
+
+
+
+
     }
 
     /**

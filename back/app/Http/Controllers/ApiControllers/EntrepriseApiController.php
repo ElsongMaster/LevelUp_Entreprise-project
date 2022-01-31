@@ -64,6 +64,10 @@ class EntrepriseApiController extends Controller
             'code_postal' => 'required|string',
         ]);
 
+        // dd($rq);
+
+
+
         $newEntreprise = new Entreprise;
         $newEntreprise->num_TVA = $rq->num_tva;
         $newEntreprise->nom = $rq->nom;

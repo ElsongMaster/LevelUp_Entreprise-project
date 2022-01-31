@@ -29,25 +29,26 @@ class AuthController extends Controller
 
         return response([
             "message" => "Succès.",
-            "data" =>$user,
+            "data" => $user,
             "status" => 200,
             "error" => []
         ]);
     }
 
-    public function allUser(){
+    public function allUser()
+    {
         return response([
             "message" => "Succès.",
-            "data" =>User::all(),
+            "data" => User::all(),
             "status" => 200,
             "error" => []
-        ]);      
+        ]);
     }
 
 
     public function register(Request $rq)
     {
-         $rq->validate([
+        $rq->validate([
             'name' => 'required|string',
             'email' => 'required|string|unique:users,email',
             'password' => 'required|string',
@@ -59,6 +60,7 @@ class AuthController extends Controller
         $user->name = $rq->name;
         $user->email = $rq->email;
         $user->password = Hash::make($rq->password);
+        $user->isprofilcomplete = false;
         $user->save();
 
 
@@ -69,7 +71,6 @@ class AuthController extends Controller
             "status" => 200,
             "error" => "{}",
         ]);
-
     }
 
 
@@ -81,9 +82,12 @@ class AuthController extends Controller
             'password' => 'required|string|min:4',
         ]);
 
+
+
         // Getting user who want to login
         $user = User::where('email', $fields['email'])->first();
 
+        // dd($user);
         if (!$user || !Hash::check($fields['password'], $user->password)) {
             return response(['message' => 'Bad creds, email or password is not correct'], 401);
         }
@@ -101,9 +105,62 @@ class AuthController extends Controller
         ];
 
         return response($response);
-    }  
-    
-    
+    }
+
+    public function updateprofilestatus(Request $rq){
+        $rq->validate([
+            'profilestatus' => 'required|boolean',
+
+
+        ]);
+        $user = $rq->user();
+        if (!$user) {
+            return response([
+                "message" => "Vous n'êtes pas connecté.",
+                "data" => [],
+                "status" => 401,
+                "error" => []
+            ]);
+        }
+
+        $user->isprofilcomplete = $rq->profilestatus=="1"?true:false;
+        $user->save();
+
+        return response([
+            "message" => "Succès.",
+            "data" => [
+                "profilestatus"=>$user->isprofilcomplete
+            ],
+            "status" => 200,
+            "error" => []
+        ]);
+
+    }
+    public function getprofilestatus(Request $rq){
+
+        $user = $rq->user();
+        if (!$user) {
+            return response([
+                "message" => "Vous n'êtes pas connecté.",
+                "data" => [],
+                "status" => 401,
+                "error" => []
+            ]);
+        }
+
+
+        return response([
+            "message" => "Succès.",
+            "data" => [
+                "profilestatus"=>$user->isprofilcomplete
+            ],
+            "status" => 200,
+            "error" => []
+        ]);
+
+    }
+
+
     public function logout(Request $request)
     {
         // Getting the current connected user
