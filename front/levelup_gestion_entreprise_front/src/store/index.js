@@ -24,6 +24,7 @@ export default new Vuex.Store({
       num_fix: null,
 
     },
+    listTask:localStorage.getItem('listTask')?JSON.parse(localStorage.getItem('listTask')) :null
   },
   mutations: {
     setValIsconnected(state,isConnected){
@@ -54,7 +55,10 @@ export default new Vuex.Store({
 
 
 
-    }
+    },
+    setValListTask(state,listTask){
+      state.listTask  = listTask;
+    },
   },
   actions: {
     updateIsconnected ({commit},isConnected){
@@ -71,6 +75,9 @@ export default new Vuex.Store({
     },
     updatevatNumberIsValid ({commit},vatNumberIsValid){
       commit("setValvatNumberIsValid",vatNumberIsValid)
+    },
+    updateListTask ({commit},listTask){
+      commit("setValListTask",listTask)
     }
 
   },

@@ -16,7 +16,6 @@
               placeholder="Email"
               class="w-full border border-gray-300 py-2 pl-3 rounded mt-2 outline-none focus:ring-indigo-600 :ring-indigo-600"
               v-model="bodyDataForm.email"
-
             />
             <div v-if="$v.bodyDataForm.email.$error">
               <p class="text-red-500" v-if="!$v.bodyDataForm.email.email">
@@ -39,7 +38,6 @@
               placeholder="password"
               class="w-full border border-gray-300 py-2 pl-3 rounded mt-2 outline-none focus:ring-indigo-600 :ring-indigo-600"
               v-model="bodyDataForm.password"
-
             />
             <div v-if="$v.bodyDataForm.password.$error">
               <p
@@ -77,6 +75,9 @@ import { required, minLength, email } from "vuelidate/lib/validators";
 export default {
   name: "Home",
 
+  // mounted(){
+  //  console.log('routes',this.$route.path);
+  // },
   data() {
     return {
       isOkToSubmit: true,
@@ -124,9 +125,35 @@ export default {
               this.$store.dispatch("updateTokenConnexion", tokenReq);
               localStorage.setItem("tokenConnexion", tokenReq);
               localStorage.setItem("isConnected", 1);
-              console.log(response.data.status);
+              // console.log(response.data.status);
               this.$store.dispatch("updateIsconnected", true);
-              this.$router.push({ path: "/multisteps" });
+              axios
+                .get("http://127.0.0.1:8001/api/v1/profilestatus", {
+                  headers: {
+                    Authorization: "Bearer " + tokenReq,
+                  },
+                })
+                .then((response) => {
+                  // console.log("login",response);
+                  if (response.data.data.profilestatus == "1") {
+                    this.$router.push({ path: "/dashboard" });
+
+                    // Recup des taches de l'entreprise
+                    axios
+                      .get("http://127.0.0.1:8001/api/v1/taches", {
+                        headers: {
+                          Authorization: "Bearer " + tokenReq,
+                        },
+                      })
+                      .then((response) => {
+                        let listTask = response.data.data;
+                        localStorage.setItem("listTask",JSON.stringify(listTask) );
+                        this.$store.dispatch('updateListTask',listTask)
+                      });
+                  } else {
+                    this.$router.push({ path: "/multisteps" });
+                  }
+                });
             }
           });
       }

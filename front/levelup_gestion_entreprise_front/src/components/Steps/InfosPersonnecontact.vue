@@ -131,6 +131,17 @@ export default {
         .then((response) => {
           console.log("personneContact", response);
           this.$store.dispatch("updatePersonneContact", this.personneContact);
+          if(response.data.status == 200){
+              axios
+                .post("http://127.0.0.1:8001/api/v1/profilestatus",{"profilestatus":true}, {
+                  headers: {
+                    Authorization: "Bearer " + tokenReq,
+                  },
+                })
+                .then((response) => {
+                  console.log(response);
+                });
+          }
         });
     },
   },

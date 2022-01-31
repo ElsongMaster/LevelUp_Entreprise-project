@@ -8,19 +8,47 @@
           <a href="#" class="hover:text-indigo-600 text-gray-700">About</a>
           <a href="#" class="hover:text-indigo-600 text-gray-700">Service</a>
           <a href="#" class="hover:text-indigo-600 text-gray-700">Contact</a> -->
-          <router-link class="hover:text-indigo-600 text-gray-700" to="/">Home</router-link> 
-          <router-link v-if="this.$store.state.isConnected" class="hover:text-indigo-600 text-gray-700" to="/multisteps">Formulaire Entreprise</router-link>
+          <router-link v-if="this.$route.path != '/dashboard'" class="hover:text-indigo-600 text-gray-700" to="/"
+            >Home</router-link
+          >
+          <!-- <router-link
+            v-if="this.$store.state.isConnected"
+            class="hover:text-indigo-600 text-gray-700"
+            to="/multisteps"
+            >Formulaire Entreprise</router-link
+          > -->
         </div>
       </div>
       <div class="flex space-x-4 items-center">
         <!-- <a href="#" class="text-gray-800 text-sm">LOGIN</a> -->
-          <router-link class="text-gray-800 text-sm" v-if="!this.$store.state.isConnected" to="/">LOGIN</router-link>
+        <router-link
+          class="text-gray-800 text-sm"
+          v-if="!this.$store.state.isConnected"
+          to="/"
+          >LOGIN</router-link
+        >
 
-          <router-link class="bg-indigo-600 px-4 py-2 rounded text-white hover:bg-indigo-500 text-sm" to="/register" v-if="!this.$store.state.isConnected">SIGNUP</router-link>
+        <router-link
+          class="bg-indigo-600 px-4 py-2 rounded text-white hover:bg-indigo-500 text-sm"
+          to="/register"
+          v-if="!this.$store.state.isConnected"
+          >SIGNUP</router-link
+        >
 
-          <router-link class="text-gray-800 text-sm underline" v-if="this.$store.state.isConnected" to="/">DASHBOARD</router-link>
+        <!-- <router-link
+          class="text-gray-800 text-sm underline"
+          v-if="this.$store.state.isConnected"
+          to="/"
+          >DASHBOARD</router-link
+        > -->
 
-          <router-link class="bg-green-600 px-4 py-2 rounded text-white hover:bg-green-500 text-sm" to="" @click.native="logout()" v-if="this.$store.state.isConnected">LOG OUT</router-link>
+        <router-link
+          class="bg-green-600 px-4 py-2 rounded text-white hover:bg-green-500 text-sm"
+          to=""
+          @click.native="logout()"
+          v-if="this.$store.state.isConnected"
+          >LOG OUT</router-link
+        >
         <!-- <a
           href="#"
           class="bg-indigo-600 px-4 py-2 rounded text-white hover:bg-indigo-500 text-sm"
@@ -38,19 +66,19 @@
 // import MultiSteps from "./components/MultiSteps.vue";
 export default {
   name: "App",
-  data(){
-    return{
-      isConnected:false
-    }
+  data() {
+    return {
+      isConnected: false,
+    };
   },
 
   components: {
     // MultiSteps
   },
 
-  methods:{
-    setValConnected(){
-      this.isConnected =true
+  methods: {
+    setValConnected() {
+      this.isConnected = true;
     },
     logout() {
       this.$store.dispatch("updateIsconnected", false);
@@ -59,7 +87,7 @@ export default {
 
       this.$router.push({ path: "/" });
     },
-  }
+  },
 };
 </script>
 

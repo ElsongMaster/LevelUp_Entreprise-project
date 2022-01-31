@@ -38,6 +38,37 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/Register.vue')
     // component: MultiSteps
 
+  },
+  {
+    path: '/dashboard',
+    redirect:{path:'/dashboard/:slug', params:{slug:'profile'}}
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    children:[
+      {
+        path: ":slug",
+        name: "Profile",
+        component: () => import(/* webpackChunkName: "about" */ '../views/Profile.vue')
+      },
+      {
+        path: ":slug",
+        name: "ListTask",
+        component: () => import(/* webpackChunkName: "about" */ '../views/ListTask.vue')
+      },
+      {
+        path: ":slug",
+        name: "HelpDesk",
+        component: () => import(/* webpackChunkName: "about" */ '../views/HelpDesk.vue')
+      }
+    ],
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/Dashboard.vue')
+    // component: MultiSteps
+
   }
 ]
 
@@ -54,8 +85,10 @@ router.beforeEach((to, from, next) => {
     // if not, redirect to login page.
     if (!store.state.isConnected) {
       next({ name: 'Home' })
-    } else {
-      next() // go to wherever I'm going
+    } else if(this.$route.to =='/') {
+      next({name:'Dashboard'}) // go to wherever I'm going
+    }else{
+      next()
     }
   } else {
     next() // does not require auth, make sure to always call next()!
