@@ -75,7 +75,7 @@
                 class="router-link"
                 :to="{
                   name: 'ListTask',
-                  params: { slug: 'listask' },
+                  params: { slug: 'listtask' },
                 }"
               >
                 <a

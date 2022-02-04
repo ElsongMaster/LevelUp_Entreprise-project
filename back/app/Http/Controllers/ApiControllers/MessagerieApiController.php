@@ -74,6 +74,8 @@ class MessagerieApiController extends Controller
         $user = $rq->user();
         $message = new Message;
         $message->contenu = $fields['contenu'];
+        $message->user_id = $user->id;
+        $message->sessionmessage_id = Sessionmessage::count();
         $message->save();
 
 
@@ -88,8 +90,33 @@ class MessagerieApiController extends Controller
     }
 
     public function responseAdmin(Request $rq){
+        $user = $rq->user();
+
+        $message = new Message;
+        $message->contenu = "Quelle est votre probleme ?";
+        $message->user_id = $user->id;
+        $message->sessionmessage_id = Sessionmessage::count();
+        $message->save();
+
+
+
+
+
+        return response([
+            "message"=>" Succès",
+            "data"=>[
+                "msgAdmin"=>$message->contenu,
+                "sessionMsgIsFinish"=>false
+            ],
+            "status"=>200,
+            "error"=>[]
+        ]);
+
+
+        
 
     }
+
     /**
      * Display the specified resource.
      *

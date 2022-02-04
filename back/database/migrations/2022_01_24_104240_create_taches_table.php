@@ -18,7 +18,7 @@ class CreateTachesTable extends Migration
             $table->string('titre');
             $table->string('description');
             $table->string('status');
-            $table->foreignId('user_id')->contrained('users','id');
+            $table->foreignId('entreprise_id')->contrained('entreprises','id');
             $table->timestamps();
         });
     }

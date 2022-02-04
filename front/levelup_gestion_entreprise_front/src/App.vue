@@ -8,7 +8,7 @@
           <a href="#" class="hover:text-indigo-600 text-gray-700">About</a>
           <a href="#" class="hover:text-indigo-600 text-gray-700">Service</a>
           <a href="#" class="hover:text-indigo-600 text-gray-700">Contact</a> -->
-          <router-link v-if="this.$route.path != '/dashboard'" class="hover:text-indigo-600 text-gray-700" to="/"
+          <router-link v-if="this.$route.path != '/dashboard' && !this.$store.state.isConnected" class="hover:text-indigo-600 text-gray-700" to="/"
             >Home</router-link
           >
           <!-- <router-link
@@ -58,7 +58,7 @@
     </div>
     <div id="nav"></div>
     <!-- <multi-steps></multi-steps> -->
-    <router-view />
+    <router-view :key="$route.path" />
   </div>
 </template>
 
@@ -66,6 +66,10 @@
 // import MultiSteps from "./components/MultiSteps.vue";
 export default {
   name: "App",
+
+  mounted(){
+    console.log(this.$route.path)
+  },
   data() {
     return {
       isConnected: false,
@@ -111,5 +115,8 @@ export default {
       color: #42b983;
     }
   }
+}
+input{
+  border-style: solid !important;
 }
 </style>

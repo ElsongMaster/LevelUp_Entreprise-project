@@ -14,7 +14,7 @@
               name="email"
               id="email"
               placeholder="Email"
-              class="w-full border border-gray-300 py-2 pl-3 rounded mt-2 outline-none focus:ring-indigo-600 :ring-indigo-600"
+              class="w-full  border-2 border-gray-300 py-2 pl-3 rounded mt-2 outline-none focus:ring-indigo-600 :ring-indigo-600"
               v-model="bodyDataForm.email"
             />
             <div v-if="$v.bodyDataForm.email.$error">
@@ -36,7 +36,7 @@
               name="password"
               id="password"
               placeholder="password"
-              class="w-full border border-gray-300 py-2 pl-3 rounded mt-2 outline-none focus:ring-indigo-600 :ring-indigo-600"
+              class="w-full border-2 border-gray-300 py-2 pl-3 rounded mt-2 outline-none focus:ring-indigo-600 :ring-indigo-600"
               v-model="bodyDataForm.password"
             />
             <div v-if="$v.bodyDataForm.password.$error">
@@ -166,3 +166,7 @@ export default {
   },
 };
 </script>
+
+<style >
+
+</style>

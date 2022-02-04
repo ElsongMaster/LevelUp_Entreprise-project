@@ -23,8 +23,8 @@ class TacheApiController extends Controller
         }
         return response([
             "message"=>"succés",
-            "data"=>$user->taches()->get(),
-            "status" => 401,
+            "data"=>$user->entreprise->taches()->get(),
+            "status" => 200,
             "error" => []
         ]);
     }

@@ -89,8 +89,8 @@
                   <p class="text-gray-900 whitespace-no-wrap">{{task.description}}</p>
                 </td>
                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                  <p v-if="!tabModifSelect[index].isSelectToModif" class="text-gray-900 whitespace-no-wrap">{{tabModifSelect[index].status}}</p>
-                  <select v-else 
+                  <p v-if="tabModifSelect[index].isSelectToModif" class="text-gray-900 whitespace-no-wrap">{{tabModifSelect[index].status}}</p>
+                  <select 
                   @change="updateStatus(index,$event)" @blur="updateisSelectToModif(index,false)" name="status" id="">
                       <option   :selected ="task.status == 'done'"  value="done">done</option>
                       <option  :selected ="task.status == 'open'" value="open">open</option>
@@ -149,6 +149,10 @@ export default {
         this.createTabModifSelect();
 
         // console.log(this.tabModifSelect[0].isSelectToModif);
+    },
+
+    mounted(){
+      console.log(this.$route.path);
     },
     data(){
         return{

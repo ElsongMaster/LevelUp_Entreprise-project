@@ -11,11 +11,14 @@ class Entreprise extends Model
 
     
     public function user(){
-        return $this->belongsTo(Profilcompany::class);
+        return $this->belongsTo(User::class);
     }
 
     public function personnecontact(){
         return $this->hasOne(Personnecontact::class);
+    }
+    public function taches(){
+        return $this->hasMany(Tache::class);
     }
 
 }

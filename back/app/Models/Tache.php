@@ -12,8 +12,8 @@ class Tache extends Model
 
     protected $table = "taches";
 
-    public function user(){
-        return $this->belongsTo(User::class);
+    public function entreprise(){
+        return $this->belongsTo(Entreprise::class);
     }
 
 

@@ -39,4 +39,6 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::get('/v1/profilestatus',[AuthController::class,'getprofilestatus']);
     Route::get('/v1/taches',[TacheApiController::class,'index']);
     Route::get('/v1/message/welcome',[MessagerieApiController::class,'welcome']);
+    Route::post('/v1/message',[MessagerieApiController::class,'store']);
+    Route::get('/v1/message/admin',[MessagerieApiController::class,'responseAdmin']);
 });

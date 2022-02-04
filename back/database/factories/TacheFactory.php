@@ -17,7 +17,7 @@ class TacheFactory extends Factory
             "titre"=>$this->faker->text(5),
             "description"=>$this->faker->text(10),
             "status"=>$this->faker->randomElement($array = array ('done','open')),
-            "user_id"=>2,
+            "entreprise_id"=>1,
         ];
     }
 }

@@ -15,9 +15,9 @@ class EntrepriseController extends Controller
      */
     public function index()
     {
-        $entreprise = Entreprise::all();
+        $entreprises = Entreprise::all();
 
-        return view('backend.entreprise.allEntreprise',compact('entreprises'));
+        return view('entreprise.allEntreprise', compact('entreprises'));
     }
 
     /**
@@ -27,7 +27,6 @@ class EntrepriseController extends Controller
      */
     public function create()
     {
-        
     }
 
     /**
@@ -38,9 +37,6 @@ class EntrepriseController extends Controller
      */
     public function store(Request $rq)
     {
-
-
-
     }
 
     /**
@@ -51,7 +47,7 @@ class EntrepriseController extends Controller
      */
     public function show(Entreprise $entreprise)
     {
-        return view('backend.entreprise.show', compact('entreprise'));
+        return view('entreprise.show', compact('entreprise'));
     }
 
     /**
@@ -62,8 +58,6 @@ class EntrepriseController extends Controller
      */
     public function edit(Entreprise $entreprise)
     {
-
-
     }
 
     /**
@@ -73,7 +67,7 @@ class EntrepriseController extends Controller
      * @param  \App\Models\scr  $scr
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, scr $scr)
+    public function update(Request $request, Entreprise $entreprise)
     {
         //
     }
@@ -84,7 +78,7 @@ class EntrepriseController extends Controller
      * @param  \App\Models\scr  $scr
      * @return \Illuminate\Http\Response
      */
-    public function destroy(scr $scr)
+    public function destroy(Entreprise $entreprise)
     {
         //
     }
