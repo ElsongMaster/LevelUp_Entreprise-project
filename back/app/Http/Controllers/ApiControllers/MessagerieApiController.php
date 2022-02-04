@@ -16,10 +16,10 @@ class MessagerieApiController extends Controller
      */
     public function index()
     {
-  
     }
 
-    public function welcome(Request $rq){
+    public function welcome(Request $rq)
+    {
         $newSessionmsg = new Sessionmessage;
         $user = $rq->user();
         $newSessionmsg->user_id = $user->id;
@@ -27,27 +27,20 @@ class MessagerieApiController extends Controller
         $newSessionmsg->save();
 
         $newMessage = new Message;
-        $newMessage->contenu = "Bienvenue Mme/Mr. ".$user->name.", que puis-je faire pour vous ?";
-        $newMessage->user_id = $user->id;
+        $newMessage->contenu = "Bienvenue Mme/Mr. " . $user->name . ", que puis-je faire pour vous ?";
+        $newMessage->user_id = 1;
         $newMessage->sessionmessage_id = $newSessionmsg->id;
         $newMessage->save();
 
 
         return response([
             "message" => "Succès.",
-            "data" =>[
-                "msg"=>$newMessage->contenu
+            "data" => [
+                "msg" => $newMessage->contenu
             ],
             "status" => 200,
             "error" => []
         ]);
-
-
-
-
-
-
-
     }
 
     /**
@@ -61,13 +54,13 @@ class MessagerieApiController extends Controller
         $fields = $rq->validate([
             'contenu' => 'required|string',
 
-        ]); 
+        ]);
 
-        if(strlen($fields['contenu'])== 0){
+        if (strlen($fields['contenu']) == 0) {
             return response([
-                "message"=>"Le contenu du msg ne peut pas être vide",
-                "status"=>401,
-                "error"=>[]
+                "message" => "Le contenu du msg ne peut pas être vide",
+                "status" => 401,
+                "error" => []
             ]);
         }
 
@@ -82,39 +75,28 @@ class MessagerieApiController extends Controller
 
 
         return response([
-            "message"=>"Message reçu avec succès",
-            "data"=>$message,
-            "status"=>200,
-            "error"=>[]
+            "message" => "Message reçu avec succès",
+            "data" => $message,
+            "status" => 200,
+            "error" => []
         ]);
     }
 
-    public function responseAdmin(Request $rq){
-        $user = $rq->user();
-
-        $message = new Message;
-        $message->contenu = "Quelle est votre probleme ?";
-        $message->user_id = $user->id;
-        $message->sessionmessage_id = Sessionmessage::count();
-        $message->save();
-
-
-
-
+    public function responseAdmin(Request $rq)
+    {
+        // $user = $rq->user();
+        $sessionmsg = Sessionmessage::latest()->first();
+        $message = $sessionmsg->messages()->where('user_id', '=', 1)->latest()->first();
 
         return response([
-            "message"=>" Succès",
-            "data"=>[
-                "msgAdmin"=>$message->contenu,
-                "sessionMsgIsFinish"=>false
+            "message" => " Succès",
+            "data" => [
+                "msgAdmin" => $message->contenu,
+                "sessionMsgIsFinish" => $message->contenu == "cloture session"
             ],
-            "status"=>200,
-            "error"=>[]
+            "status" => 200,
+            "error" => []
         ]);
-
-
-        
-
     }
 
     /**

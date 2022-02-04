@@ -9,7 +9,6 @@
       <button
         ref="btn"
         @click="getWelcomeMsg()"
-        :disabled="!sessionMsgIsFinish"
         class="cursor-pointer py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
       >
         <i class="fas fa-comments"></i>
@@ -133,7 +132,6 @@
           type="text"
           ref="inputUserMsg"
           placeholder="Type your message…"
-          :disabled="sessionMsgIsFinish"
         />
       </div>
     </div>
@@ -154,34 +152,36 @@ export default {
   // },
 
   mounted() {
-    if (
-      this.adminMsgs &&
-      this.userMsgs[this.userMsgs.length - 1].contenu != ""
-    ) {
+    if(JSON.parse(localStorage.getItem("sessionMsgIsFinish"))){
+      this.clotureSessionChat()
+    }
+    if (localStorage.getItem("adminMsgs")) {
+      this.adminMsgs = JSON.parse(localStorage.getItem("adminMsgs"));
+      this.userMsgs = JSON.parse(localStorage.getItem("userMsgs"));
+      this.sessionMsgIsFinish = JSON.parse(localStorage.getItem("sessionMsgIsFinish"));
+    }
+    if (this.adminMsgs) {
       this.responseAdmin();
     }
 
-    if (!this.sessionMsgIsFinish && !this.$refs.btn.classList.contains("bg-disable")) {
+    if (
+      !this.sessionMsgIsFinish &&
+      this.adminMsgs &&
+      !this.$refs.btn.classList.contains("bg-disable")
+    ) {
       this.$refs.btn.classList.add("bg-disable");
-    }else{
+    } else {
       this.$refs.btn.classList.remove("bg-disable");
-
     }
 
-    this.sessionMsgIsFinish = localStorage.getItem("sessionMsgIsFinish") ? false : true;
+    // this.sessionMsgIsFinish = localStorage.getItem("sessionMsgIsFinish") ? false : true;
   },
   data() {
     return {
-      userMsgs: localStorage.getItem("userMsgs")
-        ? JSON.parse(localStorage.getItem("userMsgs"))
-        : null,
-      adminMsgs: localStorage.getItem("adminMsgs")
-        ? JSON.parse(localStorage.getItem("adminMsgs"))
-        : null,
+      userMsgs: null,
+      adminMsgs: null,
 
-      sessionMsgIsFinish: localStorage.getItem("sessionMsgIsFinish")
-        ? JSON.parse(localStorage.getItem("adminMsgs"))
-        : false,
+      sessionMsgIsFinish: false,
     };
   },
 
@@ -197,11 +197,14 @@ export default {
           })
           .then((response) => {
             console.log(response);
+            this.adminMsgs = [];
+            this.userMsgs = [];
             this.adminMsgs.push(response.data.data.msg);
             this.userMsgs.push({ contenu: "", display: false });
             localStorage.setItem("userMsgs", JSON.stringify(this.userMsgs));
             localStorage.setItem("adminMsgs", JSON.stringify(this.adminMsgs));
             this.$refs.btn.classList.add("bg-disable");
+            this.$refs.btn.setAttribute("disabled", true);
           });
       }
     },
@@ -243,15 +246,15 @@ export default {
         .then((response) => {
           console.log(response);
           if (response.data.data.sessionMsgIsFinish == "1") {
-
             this.sessionMsgIsFinish = true;
             this.adminMsgs.push(
               "La session de chat à été cloturé par l'administrateur"
             );
             localStorage.setItem("sessionMsgIsFinish", JSON.stringify(true));
             this.userMsgs.push({ contenu: "", display: false });
-
           } else {
+            this.adminMsgs = JSON.parse(localStorage.getItem("adminMsgs"));
+            this.userMsgs = JSON.parse(localStorage.getItem("userMsgs"));
             this.adminMsgs.push(response.data.data.msgAdmin);
             this.userMsgs.push({ contenu: "", display: false });
             localStorage.setItem("adminMsgs", JSON.stringify(this.adminMsgs));
@@ -260,15 +263,21 @@ export default {
           }
         });
     },
-  },
 
-  beforeUnmount() {
-    if (this.sessionMsgIsFinish) {
+    clotureSessionChat(){
       localStorage.removeItem("userMsgs");
       localStorage.removeItem("adminMsgs");
       localStorage.removeItem("sessionMsgIsFinish");
     }
   },
+
+  // beforeUnmount() {
+  //   if (this.sessionMsgIsFinish) {
+  //     localStorage.removeItem("userMsgs");
+  //     localStorage.removeItem("adminMsgs");
+  //     localStorage.removeItem("sessionMsgIsFinish");
+  //   }
+  // },
 };
 </script>
 

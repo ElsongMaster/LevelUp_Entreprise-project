@@ -30,3 +30,4 @@ Route::get('/home', function () {
 Route::resource('entreprises', EntrepriseController::class)->middleware('auth');
 Route::resource('taches', TacheController::class)->middleware('auth');
 Route::get('/chat',[MessagerieController::class,'index'])->middleware('auth');
+Route::post('/message/admin',[MessagerieController::class,'store'])->name('messages.store')->middleware('auth');

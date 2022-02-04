@@ -47,7 +47,7 @@ const routes = [
   // },
   {
     path: "/dashboard",
-    redirect: { name: "ListTask" },
+    redirect: { name: "Profile" },
     meta: {
       requiresAuth: true,
     },
