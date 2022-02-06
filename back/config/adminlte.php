@@ -244,7 +244,7 @@ return [
             'icon' => 'fas fa-comments',
         ],
         [
-            'text' => 'profile',
+            'text' => 'Liste des entreprises',
             'url'  => 'entreprises',
             'icon' => 'fas fa-fw fa-user',
         ],

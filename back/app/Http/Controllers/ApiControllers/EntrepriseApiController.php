@@ -6,7 +6,9 @@ namespace App\Http\Controllers\ApiControllers;
 use App\Models\Entreprise;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Mail\Creationcompte;
 use App\Models\Personnecontact;
+use Illuminate\Support\Facades\Mail;
 
 class EntrepriseApiController extends Controller
 {
@@ -19,13 +21,13 @@ class EntrepriseApiController extends Controller
     {
         $user = $rq->user();
         $data = [
-            "profile"=>$user->profilecompany(),
-            "personne de contact"=>$user->profilecompany()->personnecontact()
+            "profile" => $user->profilecompany(),
+            "personne de contact" => $user->profilecompany()->personnecontact()
         ];
 
         return response([
             "message" => "Succès.",
-            "data" =>$data,
+            "data" => $data,
             "status" => 200,
             "error" => []
         ]);
@@ -52,7 +54,8 @@ class EntrepriseApiController extends Controller
         ]);
     }
 
-    public function register(Request $rq){
+    public function register(Request $rq)
+    {
         $rq->validate([
             'num_tva' => 'required|string',
             'nom' => 'required|string',
@@ -63,8 +66,6 @@ class EntrepriseApiController extends Controller
             'num_fixe' => 'required|string',
             'code_postal' => 'required|string',
         ]);
-
-        // dd($rq);
 
 
 
@@ -79,17 +80,17 @@ class EntrepriseApiController extends Controller
         $newEntreprise->code_postal = $rq->code_postal;
         $newEntreprise->user_id = $rq->user()->id;
         $newEntreprise->save();
-        
-        
+
+
         return response()->json([
             "message" => "Infos conncernant l'entreprise correctement enregistré",
             "data" => [],
             "status" => 200,
             "error" => "{}",
         ]);
-
     }
-    public function register2(Request $rq){
+    public function register2(Request $rq)
+    {
         $rq->validate([
             'email' => 'required|string',
             'nom' => 'required|string',
@@ -102,17 +103,19 @@ class EntrepriseApiController extends Controller
         $newPersonnecontact->email = $rq->email;
         $newPersonnecontact->nom = $rq->nom;
         $newPersonnecontact->num = $rq->num;
-        $newPersonnecontact->entreprise_id= $user->entreprise->id;
+        $newPersonnecontact->entreprise_id = $user->entreprise->id;
         $newPersonnecontact->save();
-        
-        
+        // dd($newPersonnecontact->email);
+
+        Mail::to($newPersonnecontact->email)->send(new Creationcompte());
+
+
         return response()->json([
-            "message" => "Infos conncernant l'entreprise correctement enregistré",
+            "message" => "Infos concernant l'entreprise correctement enregistré, Compte complété avec succès",
             "data" => $newPersonnecontact,
             "status" => 200,
             "error" => "{}",
         ]);
-
     }
 
     /**
@@ -141,7 +144,7 @@ class EntrepriseApiController extends Controller
             'num' => 'required|string',
 
         ]);
-        
+
         $user = $rq->user();
         $personneContact = $user->entrprise()->personnecontact();
         $personneContact->email = $rq->email;
@@ -150,20 +153,17 @@ class EntrepriseApiController extends Controller
 
         $personneContact->save();
         $data = [
-            "profile"=>$user->profilecompany(),
-            "personne de contact"=>$user->profilecompany()->personnecontact()
+            "profile" => $user->profilecompany(),
+            "personne de contact" => $user->profilecompany()->personnecontact()
         ];
         return response([
-            "message"=>"Votre profil a bien été modifié",
-            "data"=>$data,
-            "status"=>200,
-            "error"=>[],
-            
+            "message" => "Votre profil a bien été modifié",
+            "data" => $data,
+            "status" => 200,
+            "error" => [],
+
 
         ]);
-
-
-
     }
 
 

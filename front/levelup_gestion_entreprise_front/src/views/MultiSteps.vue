@@ -1,5 +1,5 @@
 <template>
-  <component :is ="steps[currentStep].component" @increment="next()" @decrement="previous()"/>
+  <component :is ="steps[currentStep].component" @increment="next()" />
 </template>
 
 <script>
@@ -31,9 +31,6 @@ export default {
           this.currentStep+=1;
       },
 
-      previous(){
-          this.currentStep-=1;
-      }
   }
 };
 </script>

@@ -26,7 +26,7 @@
                 :disabled="this.$store.state.vatNumberIsValid"
                 @blur="verifVatNumber()"
               />
-                <!-- <p
+              <!-- <p
                   class="text-red-500"
                   v-if="!this.$store.state.vatNumberIsValid && infosEntreprise.num_tva !=null"
                 >
@@ -64,7 +64,7 @@
                 placeholder="Activité"
                 type="text"
                 id="Activité"
-                ref="Activité"
+                ref="activite"
                 name="activite"
                 v-model="infosEntreprise.activite"
               />
@@ -79,6 +79,7 @@
                 type="text"
                 id="adresse"
                 name="adresse"
+                ref="adresse"
                 v-model="infosEntreprise.adresse"
                 :disabled="this.$store.state.vatNumberIsValid"
               />
@@ -182,14 +183,14 @@ export default {
   data() {
     return {
       infosEntreprise: {
-        num_tva: this.$store.state.infosEntreprise.num_tva,
-        nom: this.$store.state.infosEntreprise.nom,
-        activite: this.$store.state.infosEntreprise.activite,
-        adresse: this.$store.state.infosEntreprise.adresse,
-        ville: this.$store.state.infosEntreprise.ville,
-        code_postal: this.$store.state.infosEntreprise.code_postal,
-        pays: this.$store.state.infosEntreprise.pays,
-        num_fix: this.$store.state.infosEntreprise.num_fix,
+        num_tva: null,
+        nom: null,
+        activite: null,
+        adresse: null,
+        ville: null,
+        code_postal: null,
+        pays: null,
+        num_fix: null,
       },
       formIsFullFill: null,
     };
@@ -202,6 +203,13 @@ export default {
     },
   },
   mounted() {
+    // console.log(localStorage.getItem('InfosEntreprise'));
+    if (localStorage.getItem("InfosEntreprise")) {
+      // console.log('mounted2');
+      this.infosEntreprise = JSON.parse(
+        localStorage.getItem("InfosEntreprise")
+      );
+    }
     this.checkFullFillForm();
   },
 
@@ -210,38 +218,50 @@ export default {
       this.$emit("increment");
       this.$store.dispatch("updateInfosEntreprise", this.infosEntreprise);
 
-      this.sendDataForm();
+      // this.sendDataForm();
     },
 
-    sendDataForm() {
-      var formRequest = new FormData(this.$refs.form);
-      formRequest.append("num_tva", this.infosEntreprise.num_tva);
-      formRequest.append("nom", this.infosEntreprise.nom);
-      formRequest.append("activite", this.infosEntreprise.activite);
-      formRequest.append("adresse", this.infosEntreprise.adresse);
-      formRequest.append("ville", this.infosEntreprise.ville);
-      formRequest.append("code_postal", this.infosEntreprise.code_postal);
-      formRequest.append("pays", this.infosEntreprise.pays);
-      formRequest.append("num_fixe", this.infosEntreprise.num_fix);
-
-      var tokenReq = localStorage.getItem("tokenConnexion");
-      console.log(formRequest, tokenReq, this.infosEntreprise);
-
-      axios
-        .post(
-          "http://127.0.0.1:8001/api/v1/register/profilecompany",
-          formRequest,
-          {
-            headers: {
-              Authorization: "Bearer " + tokenReq,
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        )
-        .then((response) => {
-          console.log("profilecompany", response);
-        });
+    disabledInput() {
+      this.$refs.num_tva.setAttribute("disabled", true);
+      this.$refs.nom.setAttribute("disabled", true);
+      this.$refs.activite.setAttribute("disabled", true);
+      this.$refs.adresse.setAttribute("disabled", true);
+      this.$refs.ville.setAttribute("disabled", true);
+      this.$refs.code_postal.setAttribute("disabled", true);
+      this.$refs.pays.setAttribute("disabled", true);
+      this.$refs.num_fix.setAttribute("disabled", true);
     },
+
+    // sendDataForm() {
+    //     localStorage.setItem('InfosEntreprise',JSON.stringify(this.infosEntreprise))
+    //   var formRequest = new FormData();
+    //   formRequest.append("num_tva", this.infosEntreprise.num_tva);
+    //   formRequest.append("nom", this.infosEntreprise.nom);
+    //   formRequest.append("activite", this.infosEntreprise.activite);
+    //   formRequest.append("adresse", this.infosEntreprise.adresse);
+    //   formRequest.append("ville", this.infosEntreprise.ville);
+    //   formRequest.append("code_postal", this.infosEntreprise.code_postal);
+    //   formRequest.append("pays", this.infosEntreprise.pays);
+    //   formRequest.append("num_fixe", this.infosEntreprise.num_fix);
+
+    //   var tokenReq = localStorage.getItem("tokenConnexion");
+    //   console.log(formRequest, tokenReq, this.infosEntreprise);
+
+    //   axios
+    //     .post(
+    //       "http://127.0.0.1:8001/api/v1/register/profilecompany",
+    //       formRequest,
+    //       {
+    //         headers: {
+    //           Authorization: "Bearer " + tokenReq,
+    //           "Content-Type": "multipart/form-data",
+    //         },
+    //       }
+    //     )
+    //     .then((response) => {
+    //       console.log("profilecompany", response);
+    //     });
+    // },
 
     checkFullFillForm() {
       this.formIsFullFill =
@@ -253,12 +273,18 @@ export default {
         this.infosEntreprise.code_postal &&
         this.infosEntreprise.pays &&
         this.infosEntreprise.num_fix;
+        let vatNumberIsValid= JSON.parse( localStorage.getItem('vatNumberIsValid'))
 
-      if (this.formIsFullFill && this.$store.state.vatNumberIsValid) {
+      if (this.formIsFullFill && vatNumberIsValid ) {
+        localStorage.setItem(
+          "InfosEntreprise",
+          JSON.stringify(this.infosEntreprise)
+        );
         this.$refs.btn.classList.remove("pointer-events-none");
         this.$refs.btn.classList.remove("bg-gray-300");
         this.$refs.btn.classList.add("bg-black");
         this.$refs.btn.disabled = false;
+        this.disabledInput();
       } else if (!this.$refs.btn.classList.contains("bg-gray-300")) {
         this.$refs.btn.classList.add("pointer-events-none");
         this.$refs.btn.classList.add("bg-gray-300");
@@ -268,36 +294,39 @@ export default {
     },
 
     verifVatNumber() {
-      // console.log(e);
-      // e.preventDefault();
-      // e.stopPropagation();
-
-      console.log('boolean',!this.$store.state.vatNumberIsValid && this.infosEntreprise.num_tva !=null);
+      // console.log('boolean',!this.$store.state.vatNumberIsValid && this.infosEntreprise.num_tva !=null);
       axios
         .get(
-          "https://controleerbtwnummer.eu/api/validate/" +
+          "http://13.38.138.92/api/companies/" +
             this.infosEntreprise.num_tva +
-            ".json"
+            "/info"
         )
         .then((response) => {
-          console.log("controler", response);
-          let isValid = response.data.valid;
+          console.log("controler", response.data.statut);
+          let isValid = response.data.statut == 200;
           // var infosEntrepriseTemp = {};
           if (isValid) {
-            this.infosEntreprise.num_tva =
-              response.data.countryCode + response.data.vatNumber;
-            this.infosEntreprise.nom = response.data.name;
-            this.infosEntreprise.adresse =
-              response.data.address.street + " " + response.data.address.number;
-            this.infosEntreprise.ville = response.data.address.city;
-            this.infosEntreprise.code_postal = response.data.address.zip_code;
-            this.infosEntreprise.pays = response.data.address.country;
-            this.$store.dispatch("updateInfosEntreprise", this.infosEntreprise);
-            this.$store.dispatch("updatevatNumberIsValid", true);
+            localStorage.setItem('vatNumberIsValid', 'true');
+            this.infosEntreprise.tva = response.data.data.tva;
+            this.infosEntreprise.nom = response.data.data.nom;
+            this.infosEntreprise.adresse = response.data.data.adresse;
+            this.infosEntreprise.activite = response.data.data.activite;
+            this.infosEntreprise.num_fix = response.data.data.numero;
+            this.infosEntreprise.ville = response.data.data.ville;
+            this.infosEntreprise.code_postal = response.data.data.code_postal;
+            this.infosEntreprise.pays = response.data.data.pays;
 
-          }else{
-            this.$store.dispatch("updatevatNumberIsValid", false);
+            localStorage.setItem(
+              "InfosEntreprise",
+              JSON.stringify(this.infosEntreprise)
+            );
+
+            // this.$store.dispatch("updateInfosEntreprise", this.infosEntreprise);
+            this.$store.dispatch("updatevatNumberIsValid", true);
           }
+          // else{
+          //   this.$store.dispatch("updatevatNumberIsValid", false);
+          // }
         });
       this.checkFullFillForm();
       this.$v.infosEntreprise.num_tva.$touch();

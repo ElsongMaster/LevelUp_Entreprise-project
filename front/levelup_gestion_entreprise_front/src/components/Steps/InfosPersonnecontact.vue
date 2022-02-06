@@ -13,7 +13,7 @@
               <div>
                 <label class="sr-only" for="email">Email</label>
                 <input
-                @blur="checkFullFillForm()"
+                  @blur="checkFullFillForm()"
                   class="w-full p-3 text-sm border border-gray-200 rounded-lg"
                   placeholder="email"
                   type="text"
@@ -26,7 +26,7 @@
               <div>
                 <label class="sr-only" for="nom">Nom</label>
                 <input
-                @blur="checkFullFillForm()"
+                  @blur="checkFullFillForm()"
                   class="w-full p-3 text-sm border border-gray-200 rounded-lg"
                   placeholder="nom"
                   type="text"
@@ -39,7 +39,7 @@
               <div>
                 <label class="sr-only" for="num">Numéro de téléphone</label>
                 <input
-                @blur="checkFullFillForm()"
+                  @blur="checkFullFillForm()"
                   class="w-full p-3 text-sm border border-gray-200 rounded-lg"
                   placeholder="Numéro de téléphone"
                   type="text"
@@ -50,13 +50,11 @@
               </div>
 
               <div class="mt-5">
-
-
                 <button
-                ref="btn2"
+                  ref="btn2"
                   type="button"
                   class="inline-flex items-center mt-5 ml-2 justify-center w-full px-5 py-3 text-white bg-black rounded-lg sm:w-auto"
-                  @click="sendDataForm()"
+                  @click="sendDataToBackend()"
                   disabled
                 >
                   Submit
@@ -74,29 +72,38 @@
 import axios from "axios";
 export default {
   name: "InfosPersonnecontact",
+  mounted() {
+
+    if (localStorage.getItem("personneContact")) {
+      // console.log('mounted1');
+      this.personneContact = JSON.parse(localStorage.getItem('personneContact'));
+    }
+    this.checkFullFillForm();
+  },
   data() {
     return {
       personneContact: {
-        email: this.$store.state.personneContact.email,
-        nom: this.$store.state.personneContact.nom,
-        num: this.$store.state.personneContact.num,
+        email:null ,
+        nom:null ,
+        num:null ,
       },
     };
   },
 
   methods: {
-    decrementStep() {
-      this.$emit("decrement");
-      this.$store.dispatch("updatePersonneContact", this.personneContact);
-    },
+    // decrementStep() {
+    //   this.$emit("decrement");
+    //   this.$store.dispatch("updatePersonneContact", this.personneContact);
+    // },
     checkFullFillForm() {
       this.formIsFullFill =
-        this.infosEntreprise.email &&
-        this.infosEntreprise.nom &&
-        this.infosEntreprise.num;
+        this.personneContact.email &&
+        this.personneContact.nom &&
+        this.personneContact.num;
 
+      localStorage.setItem("personneContact", this.personneContact);
 
-      if (this.formIsFullFill ) {
+      if (this.formIsFullFill) {
         this.$refs.btn2.classList.remove("pointer-events-none");
         this.$refs.btn2.classList.remove("bg-gray-300");
         this.$refs.btn2.classList.add("bg-black");
@@ -109,14 +116,15 @@ export default {
       }
     },
 
-    sendDataForm() {
+    sendInfosPersonnecontact() {
+      localStorage.setItem("personneContact", JSON.stringify(this.personneContact));
       var formRequest = new FormData();
-      formRequest.append("email", this.$store.state.personneContact.email);
-      formRequest.append("nom", this.$store.state.personneContact.nom);
-      formRequest.append("num", this.$store.state.personneContact.num);
+      formRequest.append("email", this.personneContact.email);
+      formRequest.append("nom", this.personneContact.nom);
+      formRequest.append("num", this.personneContact.num);
 
       var tokenReq = localStorage.getItem("tokenConnexion");
-
+      let responseStatus = null;
       axios
         .post(
           "http://127.0.0.1:8001/api/v1/register/personnecontact",
@@ -130,19 +138,80 @@ export default {
         )
         .then((response) => {
           console.log("personneContact", response);
-          this.$store.dispatch("updatePersonneContact", this.personneContact);
-          if(response.data.status == 200){
-              axios
-                .post("http://127.0.0.1:8001/api/v1/profilestatus",{"profilestatus":true}, {
-                  headers: {
-                    Authorization: "Bearer " + tokenReq,
-                  },
-                })
-                .then((response) => {
-                  console.log(response);
-                });
-          }
+          responseStatus = response.data.status == 200;
+          // this.$store.dispatch("updatePersonneContact", this.personneContact);
+
         });
+      return responseStatus;
+    },
+
+    sendInfoEntreprise() {
+      let infosEntreprise = JSON.parse(localStorage.getItem("InfosEntreprise"));
+      var formRequest = new FormData();
+      formRequest.append("num_tva", infosEntreprise.num_tva);
+      formRequest.append("nom", infosEntreprise.nom);
+      formRequest.append("activite", infosEntreprise.activite);
+      formRequest.append("adresse", infosEntreprise.adresse);
+      formRequest.append("ville", infosEntreprise.ville);
+      formRequest.append("code_postal", infosEntreprise.code_postal);
+      formRequest.append("pays", infosEntreprise.pays);
+      formRequest.append("num_fixe", infosEntreprise.num_fix);
+
+      var tokenReq = localStorage.getItem("tokenConnexion");
+      console.log(formRequest, tokenReq, infosEntreprise);
+      let responseStatus = null;
+      axios
+        .post(
+          "http://127.0.0.1:8001/api/v1/register/profilecompany",
+          formRequest,
+          {
+            headers: {
+              Authorization: "Bearer " + tokenReq,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then((response) => {
+          console.log("profilecompany", response);
+          responseStatus = response.data.status == 200;
+        });
+
+      return responseStatus;
+    },
+
+    updateProfileStatutUSer() {
+      var tokenReq = localStorage.getItem("tokenConnexion");
+
+      //MAJ dans la base donnée en indiquant que le profil est complété
+      axios
+        .post(
+          "http://127.0.0.1:8001/api/v1/profilestatus",
+          { profilestatus: true },
+          {
+            headers: {
+              Authorization: "Bearer " + tokenReq,
+            },
+          }
+        )
+        .then(() => {
+          this.cleanLocalStorage();
+        });
+    },
+
+    sendDataToBackend() {
+      let request1IsValid = this.sendInfoEntreprise();
+      let request2IsValid = this.sendInfosPersonnecontact();
+
+      if(request1IsValid && request2IsValid ){
+        this.updateProfileStatutUSer()
+        this.$router.push({path:"/dashboard"})
+      }
+    },
+
+    cleanLocalStorage() {
+      localStorage.removeItem("personneContact");
+      localStorage.removeItem("infosEntreprise");
+      localStorage.removeItem("vatNumberIsValid");
     },
   },
 };
