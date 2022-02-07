@@ -10,15 +10,40 @@
 </head>
 <body>
 
-<h1 class="fs-4 mt-5">Un nouvelle Event à été crée voici les détails:</h1>
-    <div class="card m-3" style="width: 60vw;">
-        <div class="card-body">
-            <h5 class="card-title">Titre: <span class="  text-info">{{$eventdata["titre"]}}</span></h5>
-            <h5 class="card-title">Description: <span class="  text-info">{{$eventdata["description"]}}</span></h5>
-            <p class="card-text">date: <span class="  text-info">{{$eventdata["date"]}}</span></p>
-            <p class="card-text">Heure: <span class="  text-info">{{$eventdata["heure"]}}</span></p>
-        </div>
-    </div> 
+<h1 class="fs-4 mt-5">Voici le récapitulatif des tâches qu'il reste encore à effectuer:</h1>
+@if (count($donneeTache)>0)
     
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">titre</th>
+            <th scope="col">description</th>
+            <th scope="col">status</th>
+            <th scope="col">date et heure</th>
+        </tr>
+        </thead>
+        <tbody>
+            @foreach ($donneeTache as $tache )
+                
+            <tr>
+                <th scope="row">{{$tache['titre']}}</th>
+                <td>{{$tache['description']}}</td>
+                <td>{{$tache['status']}}</td>
+                <td>{{$tache['created_at']}}</td>
+            </tr>
+            @endforeach
+        
+
+        </tbody>
+    </table>
+        
+@else
+<p>Il n'y pas de tâches à effectuer actuellement.</p>
+    
+@endif
+
+<p>Cordialement,</p>
+
+<p class="font-bold">Equide de gestion Entreprise</p>
 </body>
 </html>

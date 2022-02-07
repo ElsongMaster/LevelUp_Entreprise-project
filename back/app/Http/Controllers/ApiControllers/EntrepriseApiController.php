@@ -7,6 +7,7 @@ use App\Models\Entreprise;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Mail\Creationcompte;
+use App\Mail\Recaptacherestante;
 use App\Models\Personnecontact;
 use Illuminate\Support\Facades\Mail;
 
@@ -92,9 +93,9 @@ class EntrepriseApiController extends Controller
     public function register2(Request $rq)
     {
         $rq->validate([
-            'email' => 'required|string',
+            'email' => 'required|string|unique:users,email',
             'nom' => 'required|string',
-            'num' => 'required|string|unique:users,email',
+            'num' => 'required|string',
 
         ]);
         $user = $rq->user();
@@ -106,9 +107,12 @@ class EntrepriseApiController extends Controller
         $newPersonnecontact->entreprise_id = $user->entreprise->id;
         $newPersonnecontact->save();
         // dd($newPersonnecontact->email);
-
         Mail::to($newPersonnecontact->email)->send(new Creationcompte());
-
+        // $personnesContact = Personnecontact::all();
+        // foreach ($personnesContact as $infosPersonne) {
+        //     $idEntreprise = $infosPersonne->entreprise->id;
+        //     Mail::to($infosPersonne->email)->bcc("dushimeelvis@gmail.com")->send(new Recaptacherestante($idEntreprise));
+        // }
 
         return response()->json([
             "message" => "Infos concernant l'entreprise correctement enregistré, Compte complété avec succès",

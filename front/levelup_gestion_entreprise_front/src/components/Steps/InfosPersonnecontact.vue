@@ -73,19 +73,22 @@ import axios from "axios";
 export default {
   name: "InfosPersonnecontact",
   mounted() {
-
     if (localStorage.getItem("personneContact")) {
       // console.log('mounted1');
-      this.personneContact = JSON.parse(localStorage.getItem('personneContact'));
+      this.personneContact = JSON.parse(
+        localStorage.getItem("personneContact")
+      );
     }
     this.checkFullFillForm();
   },
   data() {
     return {
+      request1IsValid: null,
+      request2IsValid: null,
       personneContact: {
-        email:null ,
-        nom:null ,
-        num:null ,
+        email: null,
+        nom: null,
+        num: null,
       },
     };
   },
@@ -117,14 +120,17 @@ export default {
     },
 
     sendInfosPersonnecontact() {
-      localStorage.setItem("personneContact", JSON.stringify(this.personneContact));
+      localStorage.setItem(
+        "personneContact",
+        JSON.stringify(this.personneContact)
+      );
       var formRequest = new FormData();
       formRequest.append("email", this.personneContact.email);
       formRequest.append("nom", this.personneContact.nom);
       formRequest.append("num", this.personneContact.num);
 
       var tokenReq = localStorage.getItem("tokenConnexion");
-      let responseStatus = null;
+
       axios
         .post(
           "http://127.0.0.1:8001/api/v1/register/personnecontact",
@@ -137,12 +143,14 @@ export default {
           }
         )
         .then((response) => {
-          console.log("personneContact", response);
-          responseStatus = response.data.status == 200;
+          this.request2IsValid = response.status == 200;
+          console.log("personneContact", this.request2IsValid, response);
+          if (this.request2IsValid) {
+            this.updateProfileStatutUSer();
+            this.cleanLocalStorage();
+          }
           // this.$store.dispatch("updatePersonneContact", this.personneContact);
-
         });
-      return responseStatus;
     },
 
     sendInfoEntreprise() {
@@ -159,7 +167,6 @@ export default {
 
       var tokenReq = localStorage.getItem("tokenConnexion");
       console.log(formRequest, tokenReq, infosEntreprise);
-      let responseStatus = null;
       axios
         .post(
           "http://127.0.0.1:8001/api/v1/register/profilecompany",
@@ -172,11 +179,12 @@ export default {
           }
         )
         .then((response) => {
-          console.log("profilecompany", response);
-          responseStatus = response.data.status == 200;
+          this.request1IsValid = response.status == 200;
+          if (this.request1IsValid) {
+            this.sendInfosPersonnecontact();
+          }
+          console.log("profilecompany", this.request1IsValid, response);
         });
-
-      return responseStatus;
     },
 
     updateProfileStatutUSer() {
@@ -193,24 +201,28 @@ export default {
             },
           }
         )
-        .then(() => {
-          this.cleanLocalStorage();
+        .then((response) => {
+          console.log("profileStatus", response);
+          if (response.status == 200) {
+            this.cleanLocalStorage();
+            this.$router.push({ path: "/dashboard" });
+          }
         });
     },
 
     sendDataToBackend() {
-      let request1IsValid = this.sendInfoEntreprise();
-      let request2IsValid = this.sendInfosPersonnecontact();
-
-      if(request1IsValid && request2IsValid ){
-        this.updateProfileStatutUSer()
-        this.$router.push({path:"/dashboard"})
-      }
+      this.sendInfoEntreprise();
+      console.log("condition", this.request1IsValid && this.request2IsValid);
+      // if (this.request1IsValid && this.request2IsValid) {
+      this.updateProfileStatutUSer();
+      this.$router.push({ path: "/dashboard" });
+      // }
     },
 
     cleanLocalStorage() {
+      console.log("cleanLocal");
       localStorage.removeItem("personneContact");
-      localStorage.removeItem("infosEntreprise");
+      localStorage.removeItem("InfosEntreprise");
       localStorage.removeItem("vatNumberIsValid");
     },
   },

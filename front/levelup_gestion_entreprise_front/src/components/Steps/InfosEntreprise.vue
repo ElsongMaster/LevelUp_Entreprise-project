@@ -232,6 +232,17 @@ export default {
       this.$refs.num_fix.setAttribute("disabled", true);
     },
 
+    enabledInput() {
+      this.$refs.num_tva.setAttribute("disabled", false);
+      this.$refs.nom.setAttribute("disabled", false);
+      this.$refs.activite.setAttribute("disabled", false);
+      this.$refs.adresse.setAttribute("disabled", false);
+      this.$refs.ville.setAttribute("disabled", false);
+      this.$refs.code_postal.setAttribute("disabled", false);
+      this.$refs.pays.setAttribute("disabled", false);
+      this.$refs.num_fix.setAttribute("disabled", false);
+    },
+
     // sendDataForm() {
     //     localStorage.setItem('InfosEntreprise',JSON.stringify(this.infosEntreprise))
     //   var formRequest = new FormData();
@@ -273,9 +284,11 @@ export default {
         this.infosEntreprise.code_postal &&
         this.infosEntreprise.pays &&
         this.infosEntreprise.num_fix;
-        let vatNumberIsValid= JSON.parse( localStorage.getItem('vatNumberIsValid'))
+      let vatNumberIsValid = JSON.parse(
+        localStorage.getItem("vatNumberIsValid")
+      );
 
-      if (this.formIsFullFill && vatNumberIsValid ) {
+      if (this.formIsFullFill && vatNumberIsValid) {
         localStorage.setItem(
           "InfosEntreprise",
           JSON.stringify(this.infosEntreprise)
@@ -290,6 +303,7 @@ export default {
         this.$refs.btn.classList.add("bg-gray-300");
         this.$refs.btn.classList.remove("bg-black");
         this.$refs.btn.disabled = true;
+        this.enabledInput();
       }
     },
 
@@ -306,7 +320,7 @@ export default {
           let isValid = response.data.statut == 200;
           // var infosEntrepriseTemp = {};
           if (isValid) {
-            localStorage.setItem('vatNumberIsValid', 'true');
+            localStorage.setItem("vatNumberIsValid", "true");
             this.infosEntreprise.tva = response.data.data.tva;
             this.infosEntreprise.nom = response.data.data.nom;
             this.infosEntreprise.adresse = response.data.data.adresse;

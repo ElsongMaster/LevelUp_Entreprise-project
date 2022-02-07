@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Entreprise;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -16,9 +17,15 @@ class Recaptacherestante extends Mailable
      *
      * @return void
      */
-    public function __construct( Array $donneeTache)
+    public function __construct(int $idEntreprise)
     {
-        $this->donneeTache = $donneeTache;
+        $entreprise = Entreprise::find($idEntreprise);
+        if ($entreprise->taches()->count() > 0) {
+
+            foreach ($entreprise->taches()->get() as $tache) {
+                array_push($this->donneeTache, $tache);
+            }
+        }
     }
 
     /**
@@ -28,6 +35,6 @@ class Recaptacherestante extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.recaptacherestante');
+        return $this->from("gestion_entreprise@contact.com")->subject("Récapitulatif de la liste des tâches à effectuer")->view('emails.recaptacherestante');
     }
 }
