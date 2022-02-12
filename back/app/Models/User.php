@@ -48,11 +48,15 @@ class User extends Authenticatable
         return $this->hasOne(Entreprise::class);
     }
 
+    
     public function messages(){
 
         return $this->hasMany(Message::class);
     }
+    public function messagesbis(){
 
+        return $this->hasMany(Messagebis::class);
+    }
 
     public function taches(){
         return $this->hasMany(Tache::class);

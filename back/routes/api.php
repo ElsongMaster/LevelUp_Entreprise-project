@@ -5,6 +5,7 @@ use App\Http\Controllers\ApiControllers\EntrepriseApiController;
 use App\Http\Controllers\ApiControllers\MessagerieApiController;
 use App\Http\Controllers\ApiControllers\TacheApiController;
 use App\Http\Controllers\EntrepriseController;
+use App\Http\Controllers\chatsController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -29,7 +30,8 @@ use Illuminate\Support\Facades\Route;
 Route::post('v1/register/user',[AuthController::class,'register']);
 Route::post('v1/login/user',[AuthController::class,'login']);
 Route::get('v1/users',[AuthController::class,'allUser']);
-
+Route::get('/messages', [chatsController::class, 'fetchMessages']);
+Route::post('/messages', [chatsController::class, 'sendMessage']);
 
 // Route privée
 Route::group(['middleware'=>['auth:sanctum']],function(){
